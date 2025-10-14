@@ -6,13 +6,15 @@ import { Log } from './schemas/log.schema';
 import { Model } from 'mongoose';
 import { Tail } from "tail";
 import { Server } from 'socket.io';
-
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class LogsService implements OnModuleInit {
   private io: Server;
 
-  constructor(@InjectModel(Log.name) private logModel: Model<Log>) {
-    this.io = new Server(4000, { cors: { origin: '*' } });
+  constructor(@InjectModel(Log.name) private logModel: Model<Log>,
+    private configService: ConfigService,
+  ) {
+    this.io = new Server(this.configService.get("SOCKET_PORT"), { cors: { origin: '*' } });
   }
 
   async create(createLogDto: CreateLogDto): Promise<Log> {
@@ -39,8 +41,9 @@ export class LogsService implements OnModuleInit {
   onModuleInit() {
     console.log('LogService đã được khởi tạo!');
     // const tail = new Tail("/var/log/suricata/eve.json");
-    const tail = new Tail("F:\\do an\\eve.json", {
-      useWatchFile: true, // tốt hơn cho Windows
+    // const tail = new Tail("F:\\do an\\eve.json", {
+    const tail = new Tail(this.configService.get("LOG_FILE"), {
+      useWatchFile: true,
       encoding: "utf-8",
     });
     this.io.on('connection', (s) => {
@@ -49,13 +52,13 @@ export class LogsService implements OnModuleInit {
 
     tail.on("line", (line: string) => {
       console.log("Có log mới:", line);
-      try {
-        const log = JSON.parse(line);
-        // gửi log mới cho client qua socket.io
-        this.io.emit("newLog", log);
-      } catch (e) {
-        console.error("JSON parse error:", e);
-      }
+      this.io.emit("newLog", line);
+      // try {
+
+      //   this.io.emit("newLog", line);
+      // } catch (e) {
+      //   console.error("JSON parse error:", e);
+      // }
     });
 
     tail.on("error", (err) => {

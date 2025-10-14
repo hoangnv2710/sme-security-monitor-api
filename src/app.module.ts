@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LogsModule } from './log/log.module';
+import { SystemMonitorModule } from './system-monitor/system-monitor.module';
 
 
 @Module({
@@ -19,6 +20,7 @@ import { LogsModule } from './log/log.module';
       isGlobal: true,
     }),
     LogsModule,
+    SystemMonitorModule,
   ],
   controllers: [AppController],
   providers: [AppService],
