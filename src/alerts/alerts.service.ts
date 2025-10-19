@@ -24,10 +24,10 @@ export class AlertsService implements OnModuleInit {
     onModuleInit() {
         this.logger.log('AlertsService initialized. Starting log tail...');
 
-        const logFilePath = this.configService.get<string>('SURICATA_EVE_LOG_PATH');
+        const logFilePath = this.configService.get<string>('LOG_FILE');
 
         if (!logFilePath) {
-            this.logger.error('SURICATA_EVE_LOG_PATH không được định nghĩa.');
+            this.logger.error('LOG_FILE không được định nghĩa.');
             return;
         }
         this.io.on('connection', (s) => {
