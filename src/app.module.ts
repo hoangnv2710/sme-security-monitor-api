@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LogsModule } from './log/log.module';
 import { SystemMonitorModule } from './system-monitor/system-monitor.module';
+import { AlertsModule } from './alerts/alert.module';
 
 
 @Module({
@@ -19,8 +20,9 @@ import { SystemMonitorModule } from './system-monitor/system-monitor.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    LogsModule,
+    // LogsModule,
     SystemMonitorModule,
+    AlertsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -39,3 +39,4 @@ lerna-debug.log*
 /mongo-data
 
 .env
+eve.json
